@@ -1,0 +1,177 @@
+from cs1lib import *  # start_graphics, draw_rectangle, draw_circle
+
+fifty_populous = open("city_population.txt", "r")
+
+latitude = []
+longitude = []
+
+for line in fifty_populous:
+    city_property = line.strip().split(",")
+    latitude.append(city_property[2])
+    longitude.append(city_property[3])
+fifty_populous.close()
+
+
+def visual_cities():
+    clear()
+    img = load_image("world.png")
+    draw_image(img, 0, 0)
+    i = 0
+    animated_cities.append(latitude[i])
+    while i < len(animated_cities) and i < 50: # draws most populous 50 countries, and draws them one at a time
+        set_fill_color(.5, 0, 1)  # purple
+        draw_circle(360+float(longitude[i])*2, 180-float(latitude[i])*2, 4)  # scales map markers
+        i += 1
+
+
+animated_cities = []
+
+start_graphics(visual_cities, 1, None, 3, "ThisMap", 720, 360)
+
+
+from quicksort import *
+from city import City
+
+the_list = []
+
+
+def do_it(compare_func, x, y):
+    return compare_func(x, y)
+
+
+def compare_int(a, b):
+    return a <= b
+
+
+in_file = open("world_cities.txt", "r")
+cities = []
+for line in in_file:  # i is every line in file
+
+    city_property = line.strip().split(",")  # strip works on a line in the file while split works on a list of strings
+    # in the line so it's called before split
+    city_code = city_property[0]
+    city_name = city_property[1]
+    city_region = city_property[2]
+    city_population = city_property[3]
+    city_latitude = city_property[4]
+    city_longitude = city_property[5]
+
+    new_city = City(city_code, city_name, city_region, city_population, city_latitude, city_longitude)
+    the_list.append(new_city)  # adds each new city and it's attributes to a list named "cities"
+in_file.close()
+
+out_file_population = "city_population.txt"
+people = open(out_file_population, "w")
+
+
+def compare_population(city1, city2):  # compares cities' properties
+    return int(city1.city_population) >= int(city2.city_population)
+
+
+sort(the_list, compare_population)
+for i in the_list:
+    people.write(i.__str__() + "\n")
+people.close()
+
+out_file2_alpha = "cities_alpha.txt"
+alphabet_city = open(out_file2_alpha, "w")
+
+
+def compare_alpha(city1, city2):  # compares cities' name properties prints out alphabetically
+    return str(city1.city_name) <= str(city2.city_name)
+
+
+sort(the_list, compare_alpha)
+for i in the_list:
+    alphabet_city.write(i.__str__() + "\n")
+alphabet_city.close()
+
+out_file3_latitude = "cities_latitude.txt"
+lati_city = open(out_file3_latitude, "w")
+
+
+def compare_latitude(city1, city2):
+    return float(city1.city_latitude) <= float(city2.city_latitude)
+
+
+sort(the_list, compare_latitude)
+for i in the_list:
+    lati_city.write(i.__str__() + "\n")
+lati_city.close()
+
+
+def partition(the_list, p, r, compare_func): # j is pivot, r is len(list)-1, p = 0 (initially)
+    pivot = the_list[r]  # r is end of sublist in partition function
+    i = p - 1  # p is the index of the first item in the list
+    j = p   # j is the first item in list , r is the last index of the list
+    while j < r:  # if, compare functions of lists are true (in order) then swap list (i+1) and list (j),
+        if do_it(compare_func, the_list[j], pivot):  # compares two
+            i += 1
+            (the_list[j], the_list[i]) = (the_list[i], the_list[j])  # swaps item's placement in array
+        j += 1
+
+    (the_list[i+1], the_list[r]) = (the_list[r], the_list[i+1])
+    return i + 1
+    # then increment j in alignment with the if statement outside of while loop, swap list (i+1) and ,
+# and return the value
+# compare j and r values
+
+
+def quicksort(the_list, compare_func, p = 0, r=None):  # if statement, variable that = return value from
+    # partition
+    if r == None:
+        r = len(the_list) - 1
+    if r - p < 1:  # signifies no list
+        pass  # no need to sort an empty list
+    else:
+        q = partition(the_list, p, r, compare_func)
+        quicksort(the_list, compare_func, p, q-1)  # call quicksort 2x (recurse) p and q-1, q+1
+        quicksort(the_list, compare_func, q+1, r)  # compares items in 2nd sublist
+
+
+def sort(the_list, compare_func):  # call quicksort on the list
+    quicksort(the_list, compare_func)
+
+
+def do_it(compare_func, x, y):
+    return compare_func(x, y)
+
+
+class City:
+
+    def __init__(self, country_code, city_name, city_region, city_population, city_latitude, city_longitude):
+        self.country_code = country_code
+        self.city_name = city_name
+        self.city_region = city_region
+        self.city_population = city_population
+        self.city_latitude = city_latitude
+        self.city_longitude = city_longitude
+
+    def __str__(self):
+        return str(self.city_name) + "," + str(self.city_population) + "," + str(self.city_latitude) + "," + \
+               str(self.city_longitude)
+        #  line was too long new line created
+
+
+from city import City
+in_file = open("world_cities.txt", "r")
+cities = []
+for line in in_file:  # i is every line in file
+
+    city_property = line.strip().split(",")  # strip works on a line in the file while split works on a list of strings
+    # in the line so it's called before split
+    city_code = city_property[0]
+    city_name = city_property[1]
+    city_region = city_property[2]
+    city_population = city_property[3]
+    city_latitude = city_property[4]
+    city_longitude = city_property[5]
+
+    new_city = City(city_code, city_name, city_region, city_population, city_latitude, city_longitude)
+    cities.append(new_city)  # adds each new city and it's attributes to a list named "cities"
+in_file.close()
+
+out_file = open("cities_out.txt", "w")
+for city in cities:  # loops over the list of city objects
+    out_file.write(str(city) + "\n")  # prints out each new city to a new line in out file
+out_file.close()  # closes file
